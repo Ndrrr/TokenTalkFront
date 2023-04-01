@@ -24,7 +24,7 @@ function Topbar(props) {
   const [searchquery, setSearchquery] = useState("");
   const [showBarSearchMobile, setShowBarSearchMobile] = useState(false);
   const logoutHandler = async () => {
-    // await axios.post("http://localhost:8000/api/user/logout", {
+    // await axios.post("http:///user/logout", {
     //   refreshToken: user.refreshToken,
     // });
     localStorage.setItem("user", null);
@@ -57,7 +57,7 @@ function Topbar(props) {
       try {
         if (searchquery.length >= 1) {
           const searchresult = await axios.get(
-            "http://localhost:8000/api/user/searchUser",
+            "user/searchUser",
             {
               params: { search: searchquery },
             }
@@ -139,7 +139,7 @@ function Topbar(props) {
                 <span
                   className="menuItems"
                   onClick={() => {
-                    navigate(`/profile/${user.username}`);
+                    navigate(`/profile/${user.email}`);
                   }}
                 >
                   Profile

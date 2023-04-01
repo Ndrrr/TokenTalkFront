@@ -18,22 +18,18 @@ function Share(props) {
     e.preventDefault();
     e.currentTarget.disabled = true;
     let formDataInfo = {};
-    formDataInfo.description = desc.current.value;
+    formDataInfo.content = desc.current.value;
     try {
       const formDataFile = new FormData();
       if (file) {
         formDataFile.append("file", file);
-        formDataFile.append("upload_preset", "raw8ntho");
+        formDataFile.append("content", desc.current.value);
+        formDataFile.append("authorEmail", user.email);
 
-        const img = await axios.post(
-          "https://api.cloudinary.com/v1_1/YOUR_UPLOAD_PRESET/image/upload",
-          formDataFile
-        );
-        formDataInfo.imgurl = img.data.secure_url;
-
-        await axiosJWT.post("http://localhost:8000/api/article", formDataInfo, {
+        await axiosJWT.post("/posts/create", formDataFile, {
           headers: { Authorization: "Bearer " + user.accessToken },
         });
+        console.log("post created");
         NotificationManager.success("Success", "Post has been created", 3000);
         props.hideAddPostHandler();
         navigate(`/home`);
@@ -45,6 +41,11 @@ function Share(props) {
       NotificationManager.warning("Warning", "Photo is required", 3000);
     }
   };
+
+  const onFileSet = (e) => {
+    console.log("set file");
+    setFile(e.target.files[0]);
+  }
   return (
     <ShareContainer>
       <div className="shareWrapper">
@@ -66,10 +67,16 @@ function Share(props) {
                 style={{ display: "none" }}
                 type="file"
                 id="file"
-                accept=".png,.jpeg,.jpg"
-                onChange={(e) => setFile(e.target.files[0])}
+                accept="image/*,video/*"
+                onChange={e => onFileSet(e)}
               />
             </label>
+            { (file) ? (
+                <div className="shareImgContainer">
+                    <img className="shareImg" width={"100"} height={"100"} src={URL.createObjectURL(file)} alt="" />
+                </div>
+                ) : null
+            }
           </div>
           <button className="shareButton" onClick={submitHandler} type="submit">
             Share

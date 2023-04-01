@@ -8,16 +8,19 @@ import Modal from "../UI/Modal";
 import EditProfile from "../EditProfile";
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import Intercept from "../../Tools/refrech";
+import {baseUrl} from "../../axios-conf";
 
 function Profile(props) {
-  const username = useParams().username;
+  const postsUrl = baseUrl + "/posts/files";
+
+  const email = useParams().email;
   const { user: currentUser, dispatch } = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
   const [followed, setFollowed] = useState(true);
   const [showEditProfile, setshowEditProfile] = useState(false);
   const [user, setCurrentUser] = useState({
     followers: [],
-    followings: [],
+    followees: [],
   });
   const axiosJWT = axios.create();
   Intercept(axiosJWT);
@@ -28,14 +31,14 @@ function Profile(props) {
     e.preventDefault();
     setshowEditProfile(true);
   };
-  useEffect(() => {
-    setFollowed(currentUser.data.followings.includes(user?._id));
-  }, [currentUser.data.followings, user._id]);
+  // useEffect(() => {
+  //   setFollowed(currentUser.data.followees.includes(user?.id));
+  // }, [currentUser.data.followees, user.id]);
   const followHandler = async () => {
     try {
       if (followed) {
         await axiosJWT.put(
-          `http://localhost:8000/api/user/${username}/unfollow`,
+          `user/${email}/unfollow`,
           {},
           {
             headers: { Authorization: "Bearer " + currentUser.accessToken },
@@ -44,7 +47,7 @@ function Profile(props) {
         dispatch({ type: "UNFOLLOW", payload: user._id });
       } else {
         await axiosJWT.put(
-          `http://localhost:8000/api/user/${username}/follow`,
+          `user/${email}/follow`,
           {},
           {
             headers: { Authorization: "Bearer " + currentUser.accessToken },
@@ -56,22 +59,46 @@ function Profile(props) {
     } catch (e) {}
   };
   useEffect(() => {
+    console.log("starting")
     const fetchUser = async () => {
-      const res = await axios.get(
-        "http://localhost:8000/api/user/u/" + username
+      const user = await axios.get(
+        "/profile?email=" + email,
+          {
+            headers: { Authorization: "Bearer " + currentUser.accessToken },
+          }
       );
-      setCurrentUser(res.data.user);
+
+      const followers = await axios.get(
+        "/follow/followers/" + email,
+            {
+                headers: { Authorization: "Bearer " + currentUser.accessToken },
+            }
+        );
+
+      const followees = await axios.get(
+          "/follow/followees/" + email,
+          {
+              headers: { Authorization: "Bearer " + currentUser.accessToken },
+          }
+      );
+      user.data.followers = followers.data.followers;
+      user.data.followees = followees.data.followees;
+      setCurrentUser(user.data);
       const pst = await axios.get(
-        "http://localhost:8000/api/article/u/" + username
+        "/posts/all?authorEmails=" + email,
+          {
+            headers: { Authorization: "Bearer " + currentUser.accessToken },
+          }
       );
+      console.log(pst)
       setPosts(
-        pst.data.sort((p1, p2) => {
+        pst.data.posts.sort((p1, p2) => {
           return new Date(p2.createdAt) - new Date(p1.createdAt);
         })
       );
     };
     fetchUser();
-  }, [username]);
+  }, [email]);
   return (
     <>
       {showEditProfile && (
@@ -87,15 +114,15 @@ function Profile(props) {
         <div className="profileWrapper">
           <div className="profilePicture">
             <img
-              src={user.profilePicture}
+              src={user.profileImage ? user.profileImage : "https://i.imgur.com/6VBx3io.png"}
               alt=""
               className="ProfilePictureImg"
             />
           </div>
           <div className="profileData">
             <div className="profileSettings">
-              <span className="profileSettingsUsername">{user.username}</span>
-              {currentUser.data.username === username ? (
+              <span className="profileSettingsUsername">{user.email}</span>
+              {currentUser.email === email ? (
                 <>
                   <a
                     className="profileSettingsButton"
@@ -127,12 +154,12 @@ function Profile(props) {
               </span>
               <span className="profileInfoFollowings">
                 <span className="profileInfoNum"></span>
-                {user.followings.length} followings
+                {user.followees.length} folllowees
               </span>
             </div>
             <div className="profileBio">
               <span className="profileBioUsername">{user.username}</span>
-              <span className="profileBioBio">{user.description}</span>
+              <span className="profileBioBio">{user.description ? user.description : 'lorem ipsum'}</span>
             </div>
           </div>
         </div>
@@ -140,17 +167,21 @@ function Profile(props) {
       <ProfilePosts>
         <div className="postsWrapper">
           {posts.map((p) => (
-            <div key={p._id} className="profilePostWrapper">
+            <div key={p.id} className="profilePostWrapper">
               <div className="profilePost">
-                <img
-                  src={
-                    p.imgurl
-                      ? p.imgurl
-                      : "http://localhost:3000/images/defaultpost.jpg"
-                  }
-                  alt=""
-                  className="profilePostImg"
-                />
+                {p.fileType === "IMAGE" ?
+                  <img
+                    src={
+                      p.fileId ? (`${postsUrl}/${p.fileId}`)
+                        : "http://localhost:3000/images/defaultpost.jpg"
+                    }
+                    alt=""
+                    className="profilePostImg"
+                  />
+                    :
+                    <video controls className="profilePostImg"
+                           src={ p.fileId ? `${postsUrl}/${p.fileId}` : "http://localhost:3000/images/defaultpost.jpg"} />
+                }
               </div>
             </div>
           ))}

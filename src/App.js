@@ -7,6 +7,8 @@ import Profile from "./components/pages/Profile";
 import { useContext, useState, useCallback } from "react";
 import { AuthContext } from "./contexts/AuthContext/AuthContext";
 import { NotificationContainer } from "react-notifications";
+import './axios-conf'
+
 function App() {
   const { user } = useContext(AuthContext);
   const [rerenderFeed, setRerenderFeed] = useState(0);
@@ -38,7 +40,7 @@ function App() {
             element={user ? <Navigate to="/" /> : <Signup />}
           />
           <Route
-            path="/profile/:username"
+            path="/profile/:email"
             element={
               user ? (
                 <Profile rerenderFeed={rerenderFeed} onChange={handleChange} />

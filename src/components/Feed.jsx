@@ -28,9 +28,12 @@ function Feed(props) {
     const fetchPosts = async () => {
       console.log("trying to fetch posts")
       const res = await axiosJWT.get(
-        `http://localhost:8080/api/posts/all`,
+        `/posts/all`,
         { headers: { Authorization: "Bearer " + user.accessToken } }
       );
+
+      //TODO: check if the last post is the same as the first post
+      setWasLastList(true)
       console.log(res)
       if (res.data.posts.length === 1) {
         setWasLastList(true);
@@ -74,7 +77,7 @@ function Feed(props) {
         <div onScroll={onScroll} ref={listInnerRef} className="FeedWrapper">
           {posts.map((p) => (
             <Post
-              key={p._id}
+              key={p.id}
               post={p}
               rerenderFeed={props.rerenderFeed}
               onChange={props.onChange}

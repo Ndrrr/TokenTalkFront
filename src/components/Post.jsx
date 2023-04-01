@@ -11,9 +11,10 @@ import ShowPost from "./ShowPost";
 import { NotificationManager } from "react-notifications";
 import { format } from "timeago.js";
 import Backdrop from "./UI/Backdrop";
+import {baseUrl} from "../axios-conf";
 
 function Post(props) {
-  const videosUrl = "http://localhost:8080/api/posts/videos/";
+  const postsUrl = baseUrl + "/posts/files";
   const post = props.post;
   post.likes = []; //TODO
   post.comments = []
@@ -31,7 +32,7 @@ function Post(props) {
   }, []);
   const deleteHandler = async () => {
     try {
-      await axiosJWT.delete(`http://localhost:8000/api/article/${post._id}`, {
+      await axiosJWT.delete(`posts/${post.id}`, {
         headers: { Authorization: "Bearer " + user.accessToken },
       });
       NotificationManager.success("Success", "Post has been deleted", 3000);
@@ -42,7 +43,7 @@ function Post(props) {
   };
   const likeHandler = async () => {
     try {
-      await axiosJWT.get(`http://localhost:8000/api/article/${post._id}/like`, {
+      await axiosJWT.get(`posts/${post.id}/like`, {
         headers: { Authorization: "Bearer " + user.accessToken },
       });
     } catch (error) {}
@@ -102,18 +103,20 @@ function Post(props) {
         </div>
         <hr className="hrh" />
         <div className="postCenter">
-          <p className="postText">{post.description}</p>
+          <p className="postText">{post.content}</p>
           <div className="postImgWrapper">
-            {post.fileType == "IMAGE" ?
+            {post.fileType === "IMAGE" ?
             <img
-              src={post.file ? (`data:image/png;base64, ${post.file}`) :
+              src={post.fileId ? (`${postsUrl}/${post.fileId}`) :
                   "https://w0.peakpx.com/wallpaper/979/89/HD-wallpaper-purple-smile-design-eye-smily-profile-pic-face.jpg"}
               alt=""
+              width={480}
+              height={480}
               className="postImg"
             />
                 :
-                <video controls width={480}
-                    src={ post.file ? `${videosUrl}/${post.file}` : ""} />
+                <video controls width={480} height={480}
+                    src={ post.fileId ? `${postsUrl}/${post.fileId}` : ""} />
             }
           </div>
         </div>

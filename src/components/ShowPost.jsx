@@ -15,16 +15,16 @@ function ShowPost(props) {
     e.preventDefault();
     try {
       const submitData = {};
-      submitData.articleId = props.post._id;
+      submitData.articleId = props.post.id;
       submitData.description = yourComment;
-      await axiosJWT.post("http://localhost:8000/api/comment/", submitData, {
+      await axiosJWT.post("http:///comment/", submitData, {
         headers: { Authorization: "Bearer " + user.accessToken },
       });
       const newComment = {};
       newComment.username = user.data.username;
       newComment.userPicture = user.data.profilePicture;
       newComment.description = submitData.description;
-      newComment._id = Math.random();
+      newComment.id = Math.random();
       setComments((comments) => [newComment, ...comments]);
       props.newComment();
       NotificationManager.success("Success", "Comment has been created", 3000);
@@ -35,12 +35,12 @@ function ShowPost(props) {
   useEffect(() => {
     const fetchComment = async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/comment/${props.post._id}`
+        `/comment/${props.post._id}`
       );
 
       res.data.comments.forEach(async (comment) => {
         const res = await axios.get(
-          `http://localhost:8000/api/user/${comment.user}`
+          `user/${comment.user}`
         );
         comment.username = res.data.user.username;
         comment.userPicture = res.data.user.profilePicture;
@@ -64,7 +64,7 @@ function ShowPost(props) {
       </div>
       <div className="showComments">
         {comments.map((comment) => (
-          <div key={comment._id} className="oneComment">
+          <div key={comment.id} className="oneComment">
             <div className="pictureUserCommentWrapper">
               <img className="pictureUser" src={comment.userPicture} alt="" />
             </div>

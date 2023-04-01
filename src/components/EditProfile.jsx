@@ -32,7 +32,7 @@ function EditProfile(props) {
         UpdateData.profilePicture = img.data.secure_url;
       }
       const res = await axiosJWT.put(
-        `http://localhost:8000/api/user/${user.data._id}`,
+        `http:///user/${user.data._id}`,
         UpdateData,
         {
           headers: { Authorization: "Bearer " + user.accessToken },

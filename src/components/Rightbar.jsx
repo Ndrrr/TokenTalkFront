@@ -8,7 +8,7 @@ import Intercept from "../Tools/refrech";
 function Rightbar() {
   const { user, dispatch } = useContext(AuthContext);
   const [Followings, setFollowings] = useState([]);
-  const username = user.fullName;
+  const username = user.email;
   const axiosJWT = axios.create();
   Intercept(axiosJWT);
   useEffect(() => {
@@ -16,7 +16,7 @@ function Rightbar() {
       try {
         console.log("trying to fetch followings")
         const FollowingsList = await axios.get(
-          "http://localhost:8080/api/follow/followees/isgnadir@gmail.com",
+          "/follow/followees/" + username,
             { headers: { Authorization: "Bearer " + user.accessToken } }
         );
         console.log(FollowingsList)
@@ -31,7 +31,7 @@ function Rightbar() {
         <span className="rightbarFollowingTitle">Followings</span>
         <div className="rightbarFollowings">
           {Followings.map((f) => (
-            <div key={f._id} className="rightbarFollowing">
+            <div key={f.email} className="rightbarFollowing">
               <div className="rightbarfollowingLeft">
                 <Link
                   style={{ textDecoration: "none", color: "#000000" }}
@@ -50,7 +50,7 @@ function Rightbar() {
                   className="rightbarFollowingAction"
                   onClick={async () => {
                     await axiosJWT.post(
-                      `http://localhost:8080/api/follow/unfollow`,
+                      `/follow/unfollow`,
                       {
                         followerEmail: user.email,
                         followeeEmail: f.email,
