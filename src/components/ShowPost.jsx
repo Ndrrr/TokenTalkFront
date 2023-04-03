@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { NotificationManager } from "react-notifications";
 import { AuthContext } from "../contexts/AuthContext/AuthContext";
-import Intercept from "../Tools/refrech";
+import Intercept from "../util/refresh";
 
 function ShowPost(props) {
   const { user } = useContext(AuthContext);

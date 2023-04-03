@@ -6,17 +6,20 @@ import { BsPlusSquare } from "react-icons/bs";
 import { AuthContext } from "../contexts/AuthContext/AuthContext";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Modal from "../components/UI/Modal";
+//import Modal from "../components/UI/Modal";
 import Share from "./Share";
 import Search from "./Search";
 import axios from "axios";
 import Backdrop from "./UI/Backdrop";
 import SearchBarMobile from "./SearchBarMobile";
 import TokenTalkLogo from "../assets/images/tokentalklogo-without-text.png";
+import {Button, CloseButton, Modal, Spinner} from "react-bootstrap";
+import {useWeb3Data, Web3ContextProvider} from "../contexts/Web3AccountContext";
 
 function Topbar(props) {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const { web3Account } = useWeb3Data();
   const [showMenu, setShowMenu] = useState(false);
   const [showAddPost, setShowAddPost] = useState(false);
   const [showSearch, setshowSearch] = useState(false);
@@ -30,6 +33,12 @@ function Topbar(props) {
     localStorage.setItem("user", null);
     window.location.reload(false);
   };
+
+  const disconnectWeb3AccountHandler = async () => {
+    localStorage.removeItem("web3Account");
+    window.location.reload(false);
+  }
+
   const showBarSearchMobileHandler = () => {
     setShowBarSearchMobile(true);
   };
@@ -80,11 +89,17 @@ function Topbar(props) {
         />
       )}
       {showSearch && <Backdrop onClose={hideBarSearchMobileHandler} />}
-      {showAddPost && (
-        <Modal onClose={hideAddPostWithBackdropHandler}>
+        <Modal style={{height:"30%"}} backdrop={false} show={showAddPost}  onHide={hideAddPostWithBackdropHandler}>
+            <Modal.Header >
+              <Modal.Title>Share your thoughts</Modal.Title>
+              <CloseButton onClick={hideAddPostHandler} />
+            </Modal.Header>
+          <Modal.Body>
           <Share hideAddPostHandler={hideAddPostHandler}></Share>
+          </Modal.Body>
         </Modal>
-      )}
+      )
+
       <TopbarContainer>
         <div className="TopbarLeft">
           <Link to="/" style={{ textDecoration: "none" }}>
@@ -119,6 +134,13 @@ function Topbar(props) {
                 onClick={showBarSearchMobileHandler}
               ></FiSearchStyled>
             </div>
+
+            {props.showWallet && (
+                  <Button variant="outline-dark"  style={{marginRight:"10px"}}>
+                    {props.account.slice(0, 5) + '...' + props.account.slice(38, 42)}
+                  </Button>
+            ) }
+
             <div className="TopbarIconItem">
               <BsPlusSquareStyled
                 onClick={() => {
@@ -145,6 +167,27 @@ function Topbar(props) {
                   Profile
                 </span>
 
+                <span
+                    className="menuItems"
+                    onClick={() => {
+                      navigate(`/nft-dashboard/${user.email}`);
+                    }}
+                >
+                  Create Nft
+                </span>
+                <span
+                    className="menuItems"
+                    onClick={() => {
+                      navigate(`/marketplace/`);
+                    }}
+                >
+                  Marketplace
+                </span>
+                {web3Account && (
+                  <span className="menuItems" onClick={disconnectWeb3AccountHandler}>
+                    Disconnect From Metamask
+                  </span>
+                )}
                 <span className="menuItems" onClick={logoutHandler}>
                   Logout
                 </span>

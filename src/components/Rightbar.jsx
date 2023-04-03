@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { AuthContext } from "../contexts/AuthContext/AuthContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Intercept from "../Tools/refrech";
+import Intercept from "../util/refresh";
 
 function Rightbar() {
   const { user, dispatch } = useContext(AuthContext);

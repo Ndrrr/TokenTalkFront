@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Post from "./Post";
 import axios from "axios";
 import { SpinnerDotted } from "spinners-react";
-import Intercept from "../Tools/refrech";
+import Intercept from "../util/refresh";
 import { AuthContext } from "../contexts/AuthContext/AuthContext";
 
 function Feed(props) {

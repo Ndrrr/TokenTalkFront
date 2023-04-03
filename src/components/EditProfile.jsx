@@ -1,19 +1,19 @@
 import { useContext, useState } from "react";
 import styled from "styled-components";
-import Intercept from "../Tools/refrech";
+import Intercept from "../util/refresh";
 import { AuthContext } from "../contexts/AuthContext/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { NotificationManager } from "react-notifications";
-
+import {baseFrontUrl} from "../axios-conf";
 function EditProfile(props) {
   const navigate = useNavigate();
   const { user, dispatch } = useContext(AuthContext);
-  const [description, setDescription] = useState(user.data.description);
+  const [description, setDescription] = useState('');
   const [file, setFile] = useState();
-  const [picture, setPicture] = useState(user.data.profilePicture);
-  const [username, setUsername] = useState(user.data.username);
-  const [email, setEmail] = useState(user.data.email);
+  const [picture, setPicture] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState(user.email);
   const axiosJWT = axios.create();
   Intercept(axiosJWT);
   const EditHandler = async (e) => {
@@ -32,7 +32,7 @@ function EditProfile(props) {
         UpdateData.profilePicture = img.data.secure_url;
       }
       const res = await axiosJWT.put(
-        `http:///user/${user.data._id}`,
+        `/user/${user.data._id}`,
         UpdateData,
         {
           headers: { Authorization: "Bearer " + user.accessToken },
@@ -55,7 +55,7 @@ function EditProfile(props) {
               src={
                 picture
                   ? picture
-                  : "http://localhost:3000/image/defaultavatar.png"
+                  : baseFrontUrl + "/image/defaultavatar.png"
               }
               alt=""
               className="editProfileLeftImg"

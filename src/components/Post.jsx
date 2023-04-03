@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
-import Intercept from "../Tools/refrech";
+import Intercept from "../util/refresh";
 import { FiMoreVertical } from "react-icons/fi";
 import { AuthContext } from "../contexts/AuthContext/AuthContext";
 import { AiFillHeart } from "react-icons/ai";
@@ -11,10 +11,10 @@ import ShowPost from "./ShowPost";
 import { NotificationManager } from "react-notifications";
 import { format } from "timeago.js";
 import Backdrop from "./UI/Backdrop";
-import {baseUrl} from "../axios-conf";
+import {baseBackUrl} from "../axios-conf";
 
 function Post(props) {
-  const postsUrl = baseUrl + "/posts/files";
+  const postsUrl = baseBackUrl + "/posts/files";
   const post = props.post;
   post.likes = []; //TODO
   post.comments = []

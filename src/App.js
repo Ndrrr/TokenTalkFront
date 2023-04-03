@@ -8,10 +8,13 @@ import { useContext, useState, useCallback } from "react";
 import { AuthContext } from "./contexts/AuthContext/AuthContext";
 import { NotificationContainer } from "react-notifications";
 import './axios-conf'
+import NftDashboard from "./components/pages/NftDashboard";
+import Marketplace from "./components/pages/Marketplace";
 
 function App() {
   const { user } = useContext(AuthContext);
   const [rerenderFeed, setRerenderFeed] = useState(0);
+
   const handleChange = useCallback((newValue) => {
     setRerenderFeed(newValue);
   }, []);
@@ -49,6 +52,27 @@ function App() {
               )
             }
           />
+            <Route
+                path="/nft-dashboard/:email"
+                element={
+                    user ? (
+                        <NftDashboard rerenderFeed={rerenderFeed} onChange={handleChange}/>
+                    ) : (
+                        <Navigate to="/login" />
+                    )
+                }
+            />
+
+            <Route
+                path="/marketplace"
+                element={
+                    user ? (
+                        <Marketplace rerenderFeed={rerenderFeed} onChange={handleChange}/>
+                    ) : (
+                        <Navigate to="/login" />
+                    )
+                }
+            />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

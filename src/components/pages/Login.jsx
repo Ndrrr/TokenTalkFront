@@ -5,6 +5,7 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {NotificationManager} from "react-notifications";
 import TokenTalkLogo from "../../assets/images/tokentalklogo-transparent.png";
+import {baseFrontUrl} from "../../axios-conf";
 
 function Login() {
   const navigate = useNavigate();
@@ -50,22 +51,22 @@ function Login() {
         <div className="loginLeft">
           <div className="frontImgWrapper">
             <img
-              src={"http://localhost:3000/images/loginpage1.png"}
+              src={baseFrontUrl + "/images/loginpage1.png"}
               className={show1 === 1 ? "frontImg show" : "frontImg hide"}
               alt=""
             />
             <img
-              src={"http://localhost:3000/images/loginpage2.png"}
+              src={baseFrontUrl +  "/images/loginpage2.png"}
               className={show1 === 2 ? "frontImg show" : "frontImg hide"}
               alt=""
             />
             <img
-              src={"http://localhost:3000/images/loginpage3.png"}
+              src={baseFrontUrl + "/images/loginpage3.png"}
               className={show1 === 3 ? "frontImg show" : "frontImg hide"}
               alt=""
             />
             <img
-              src={"http://localhost:3000/images/loginpage4.png"}
+              src={baseFrontUrl + "/images/loginpage4.png"}
               className={show1 === 4 ? "frontImg show" : "frontImg hide"}
               alt=""
             />
@@ -149,7 +150,7 @@ const LoginContainer = styled.div`
     position: relative;
     width: 100%;
     height: 600px;
-    background-image: url("http://localhost:3000/images/loginpage.png");
+    background-image: url(${baseFrontUrl} + "/images/loginpage.png");
     min-width: 460px;
     background-repeat: no-repeat;
     background-position: right 2px;

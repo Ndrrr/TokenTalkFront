@@ -7,11 +7,11 @@ import { useParams } from "react-router-dom";
 import Modal from "../UI/Modal";
 import EditProfile from "../EditProfile";
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
-import Intercept from "../../Tools/refrech";
-import {baseUrl} from "../../axios-conf";
-
+import Intercept from "../../util/refresh";
+import {baseBackUrl} from "../../axios-conf";
+import {baseFrontUrl} from "../../axios-conf";
 function Profile(props) {
-  const postsUrl = baseUrl + "/posts/files";
+  const postsUrl = baseBackUrl + "/posts/files";
 
   const email = useParams().email;
   const { user: currentUser, dispatch } = useContext(AuthContext);
@@ -59,7 +59,6 @@ function Profile(props) {
     } catch (e) {}
   };
   useEffect(() => {
-    console.log("starting")
     const fetchUser = async () => {
       const user = await axios.get(
         "/profile?email=" + email,
@@ -173,14 +172,14 @@ function Profile(props) {
                   <img
                     src={
                       p.fileId ? (`${postsUrl}/${p.fileId}`)
-                        : "http://localhost:3000/images/defaultpost.jpg"
+                        : baseFrontUrl + "/images/defaultpost.jpg"
                     }
                     alt=""
                     className="profilePostImg"
                   />
                     :
                     <video controls className="profilePostImg"
-                           src={ p.fileId ? `${postsUrl}/${p.fileId}` : "http://localhost:3000/images/defaultpost.jpg"} />
+                           src={ p.fileId ? `${postsUrl}/${p.fileId}` : baseFrontUrl + "/images/defaultpost.jpg"} />
                 }
               </div>
             </div>

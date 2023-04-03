@@ -2,7 +2,7 @@ import { useContext, useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { MdPermMedia } from "react-icons/md";
-import Intercept from "../Tools/refrech";
+import Intercept from "../util/refresh";
 import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext/AuthContext";
 import { NotificationManager } from "react-notifications";

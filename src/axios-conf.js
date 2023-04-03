@@ -1,5 +1,6 @@
 import axios from 'axios';
 
-export const baseUrl = 'http://localhost:8080/api';
-axios.defaults.baseURL = baseUrl;
+export const baseBackUrl = 'http://192.168.100.209:8080/api';
+export const baseFrontUrl = 'http://192.168.100.209:3000';
+axios.defaults.baseURL = baseBackUrl;
 
