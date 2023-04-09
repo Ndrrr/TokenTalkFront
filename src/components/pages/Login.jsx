@@ -5,7 +5,6 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {NotificationManager} from "react-notifications";
 import TokenTalkLogo from "../../assets/images/tokentalklogo-transparent.png";
-import {baseFrontUrl} from "../../axios-conf";
 
 function Login() {
   const navigate = useNavigate();
@@ -48,30 +47,6 @@ function Login() {
   return (
     <LoginContainer>
       <div className="loginWrapper">
-        <div className="loginLeft">
-          <div className="frontImgWrapper">
-            <img
-              src={baseFrontUrl + "/images/loginpage1.png"}
-              className={show1 === 1 ? "frontImg show" : "frontImg hide"}
-              alt=""
-            />
-            <img
-              src={baseFrontUrl +  "/images/loginpage2.png"}
-              className={show1 === 2 ? "frontImg show" : "frontImg hide"}
-              alt=""
-            />
-            <img
-              src={baseFrontUrl + "/images/loginpage3.png"}
-              className={show1 === 3 ? "frontImg show" : "frontImg hide"}
-              alt=""
-            />
-            <img
-              src={baseFrontUrl + "/images/loginpage4.png"}
-              className={show1 === 4 ? "frontImg show" : "frontImg hide"}
-              alt=""
-            />
-          </div>
-        </div>
         <div className="loginRight">
           <div className="loginRightWrapper">
             <div className="loginRightTop">
@@ -142,22 +117,10 @@ const LoginContainer = styled.div`
   .loginWrapper {
     width: 100%;
     height: 70%;
-    display: flex;
-  }
-  .loginLeft {
-    flex: 1;
-    display: flex;
-    position: relative;
-    width: 100%;
-    height: 600px;
-    background-image: url(${baseFrontUrl} + "/images/loginpage.png");
-    min-width: 460px;
-    background-repeat: no-repeat;
-    background-position: right 2px;
-    @media (max-width: 877px) {
-      flex: 1;
-      display: none;
-    }
+    display: block;
+    margin-right: 50%;
+    margin-left: 50%;
+    justify-content: center;
   }
   .frontImgWrapper {
     display: flex;
@@ -168,8 +131,7 @@ const LoginContainer = styled.div`
     right: 59px;
   }
   .loginRight {
-    flex: 1;
-    display: flex;
+
     height: max-content;
     @media (max-width: 877px) {
       justify-content: center;
