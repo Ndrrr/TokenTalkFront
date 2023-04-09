@@ -12,6 +12,46 @@ function Signup() {
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [password, setPassword] = useState();
+  const [passwordConfirm, setPasswordConfirm] = useState();
+
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordConfirmError, setPasswordConfirmError] = useState('');
+
+  const onPasswordChange = (e) => {
+    setPassword(e.target.value);
+
+    if (!e.target.value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+      let errorMsg = `Password must contain`;
+      if (!e.target.value.match(/^(?=.*\d)/gm)) {
+        errorMsg += ` <li>at least one number</li>`;
+      }
+      if (!e.target.value.match(/^(?=.*[a-z])/gm)) {
+        errorMsg += ` <li>at least one lowercase letter</li>`;
+      }
+      if (!e.target.value.match(/^(?=.*[A-Z])/gm)) {
+        errorMsg += ` <li>at least one uppercase letter</li>`;
+      }
+      if (!e.target.value.match(/^(?=.*[@$!%*?&])/gm)) {
+        errorMsg += ` <li>at least one special character</li>`;
+      }
+      if (!e.target.value.match(/^(?=.{8,})/gm)) {
+        errorMsg += ` <li>at least 8 characters</li>`;
+      }
+      setPasswordError(errorMsg);
+    } else {
+      setPasswordError('');
+    }
+  }
+
+  const onPasswordConfirmChange = (e) => {
+    setPasswordConfirm(e.target.value);
+    if (e.target.value !== password) {
+      setPasswordConfirmError("Passwords do not match");
+    } else {
+      setPasswordConfirmError("");
+    }
+  }
+
   const registerHandler = async (e) => {
     e.preventDefault();
     const data = { email, firstName ,lastName, password };
@@ -33,16 +73,6 @@ function Signup() {
             <div className="signupRightTopForm">
               <form action="" className="signupBox" onSubmit={registerHandler}>
                 <input
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                  placeholder="Email"
-                  autoFocus={true}
-                  type="email"
-                  required
-                  className="signupInput"
-                />
-                <input
                     onChange={(e) => {
                       setFirstName(e.target.value);
                     }}
@@ -62,15 +92,32 @@ function Signup() {
                 />
                 <input
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setEmail(e.target.value);
                   }}
+                  placeholder="Email"
+                  autoFocus={true}
+                  type="email"
+                  required
+                  className="signupInput"
+                />
+                <input
+                  onChange={onPasswordChange}
                   placeholder="Password"
                   type="password"
                   required
-                  minLength="6"
+                  minLength="8"
                   className="signupInput"
                 />
-                <p className={""}></p>
+                <p className={'text-danger'} style={{fontSize: "0.8rem"}} dangerouslySetInnerHTML={{ __html:passwordError}}></p>
+                <input
+                    onChange={onPasswordConfirmChange}
+                    placeholder="Confirm Password"
+                    type="password"
+                    required
+                    minLength="8"
+                    className="signupInput"
+                />
+                <p className={"text-danger"} style={{fontSize: "0.8rem"}}>{passwordConfirmError}</p>
                 <button className="signupButton">Sign Up</button>
               </form>
             </div>
