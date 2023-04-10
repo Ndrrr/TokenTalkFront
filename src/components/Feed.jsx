@@ -31,7 +31,6 @@ function Feed(props) {
         `/posts/all`,
         { headers: { Authorization: "Bearer " + user.accessToken } }
       );
-
       //TODO: check if the last post is the same as the first post
       setWasLastList(true)
       console.log(res)

@@ -6,22 +6,20 @@ import { AuthContext } from "../contexts/AuthContext/AuthContext";
 import { AiFillHeart } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Modal from "./UI/Modal";
 import ShowPost from "./ShowPost";
 import { NotificationManager } from "react-notifications";
 import { format } from "timeago.js";
 import Backdrop from "./UI/Backdrop";
 import {baseBackUrl} from "../axios-conf";
+import {Modal} from "react-bootstrap";
 
 function Post(props) {
   const postsUrl = baseBackUrl + "/posts/files";
   const post = props.post;
   post.likes = []; //TODO
-  post.comments = []
   const { user } = useContext(AuthContext);
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
-  const [Countcomments, setCountComments] = useState(0);
 
   const [showPost, setShowPost] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -51,9 +49,6 @@ function Post(props) {
     setLikes(isLiked ? likes - 1 : likes + 1);
     setIsLiked(!isLiked);
   };
-  const setcommentHandler = () => {
-    setCountComments(Countcomments + 1);
-  };
   const showMenuHandler = () => {
     setShowMenu(!showMenu);
   };
@@ -62,12 +57,8 @@ function Post(props) {
     <>
       {showMenu && <Backdrop onClose={showMenuHandler} />}
       {showPost && (
-        <Modal
-          onClose={() => {
-            setShowPost(false);
-          }}
-        >
-          <ShowPost post={post} newComment={setcommentHandler}></ShowPost>
+        <Modal show={showPost} onHide={() => setShowPost(false) }>
+          <ShowPost post={post}></ShowPost>
         </Modal>
       )}
       <PostContainer>
@@ -134,7 +125,7 @@ function Post(props) {
                 setShowPost(true);
               }}
             >
-              {likes} Likes {Countcomments} Comments
+              {likes} Likes {post.comments?.length ? post.comments.length : 0 } Comments
             </span>
           </div>
         </div>

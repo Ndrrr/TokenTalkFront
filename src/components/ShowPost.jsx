@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { NotificationManager } from "react-notifications";
 import { AuthContext } from "../contexts/AuthContext/AuthContext";
 import Intercept from "../util/refresh";
+import {format} from "timeago.js";
 
 function ShowPost(props) {
   const { user } = useContext(AuthContext);
@@ -15,40 +16,30 @@ function ShowPost(props) {
     e.preventDefault();
     try {
       const submitData = {};
-      submitData.articleId = props.post.id;
-      submitData.description = yourComment;
-      await axiosJWT.post("http:///comment/", submitData, {
+      submitData.postId = props.post.id;
+      submitData.content = yourComment;
+      submitData.authorEmail = user.email;
+      submitData.authorName = user.firstName + " " + user.lastName;
+      await axiosJWT.post("comments", submitData, {
         headers: { Authorization: "Bearer " + user.accessToken },
       });
       const newComment = {};
-      newComment.username = user.data.username;
-      newComment.userPicture = user.data.profilePicture;
-      newComment.description = submitData.description;
+      newComment.authorName = user.firstName + " " + user.lastName;
+      newComment.userPicture = user.profilePicture;
+      newComment.content = submitData.content;
       newComment.id = Math.random();
+      props.post.comments = [newComment, ...props.post.comments];
       setComments((comments) => [newComment, ...comments]);
-      props.newComment();
       NotificationManager.success("Success", "Comment has been created", 3000);
     } catch (error) {
       NotificationManager.error("Error", "Warning", 3000);
     }
   };
   useEffect(() => {
-    const fetchComment = async () => {
-      const res = await axios.get(
-        `/comment/${props.post._id}`
-      );
-
-      res.data.comments.forEach(async (comment) => {
-        const res = await axios.get(
-          `user/${comment.user}`
-        );
-        comment.username = res.data.user.username;
-        comment.userPicture = res.data.user.profilePicture;
-        setComments((comments) => [comment, ...comments]);
-      });
-    };
-    fetchComment();
-  }, [props.post._id]);
+    props.post.comments?.sort((a, b) => { return new Date(b.createdAt) - new Date(a.createdAt) })
+    console.log(props.post)
+      setComments(props.post.comments ? props.post.comments : [])
+  }, [props.post.id]);
   return (
     <ShowPostContainer>
       <div className="addComment">
@@ -66,11 +57,13 @@ function ShowPost(props) {
         {comments.map((comment) => (
           <div key={comment.id} className="oneComment">
             <div className="pictureUserCommentWrapper">
-              <img className="pictureUser" src={comment.userPicture} alt="" />
+              <img className="pictureUser" src="https://i.imgur.com/6VBx3io.png" alt="" />
             </div>
             <div className="usernameAndCommentWrapper">
-              <span className="usernameComment">{comment.username}</span>
-              <span className="Comment">{comment.description}</span>
+              <span className="usernameComment">{comment.authorName}
+                <span style={{fontSize: "10px" ,fontWeight: 500}}> {format(comment.createdAt)}</span>
+              </span>
+              <span className="Comment">{comment.content}</span>
             </div>
           </div>
         ))}
