@@ -10,6 +10,7 @@ import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import Intercept from "../../util/refresh";
 import {baseBackUrl} from "../../axios-conf";
 import {baseFrontUrl} from "../../axios-conf";
+import {Button} from "react-bootstrap";
 function Profile(props) {
   const postsUrl = baseBackUrl + "/posts/files";
 
@@ -18,6 +19,8 @@ function Profile(props) {
   const [posts, setPosts] = useState([]);
   const [followed, setFollowed] = useState(true);
   const [showEditProfile, setshowEditProfile] = useState(false);
+  const [selectedPost, setSelectedPost] = useState({id:0})
+
   const [user, setCurrentUser] = useState({
     followers: [],
     followees: [],
@@ -31,6 +34,17 @@ function Profile(props) {
     e.preventDefault();
     setshowEditProfile(true);
   };
+
+  const deletePostHandler = async () => {
+
+    try {
+      await axiosJWT.delete(`posts/delete`, {
+        headers: { Authorization: "Bearer " + currentUser.accessToken },
+        data: {id: selectedPost.id, authorEmail: email}
+      });
+      setPosts(posts.filter((p) => p.id !== selectedPost.id));
+    } catch (error) {}
+  }
   // useEffect(() => {
   //   setFollowed(currentUser.data.followees.includes(user?.id));
   // }, [currentUser.data.followees, user.id]);
@@ -153,21 +167,28 @@ function Profile(props) {
               </span>
               <span className="profileInfoFollowings">
                 <span className="profileInfoNum"></span>
-                {user.followees.length} folllowees
+                {user.followees.length} followings
               </span>
             </div>
             <div className="profileBio">
               <span className="profileBioUsername">{user.username}</span>
               <span className="profileBioBio">{user.description ? user.description : 'lorem ipsum'}</span>
             </div>
+            {currentUser.email === email && posts.length > 0 && (
+              <div>
+                <button className="btn-danger" onClick={deletePostHandler}>Delete Post</button>
+              </div>
+            )}
           </div>
         </div>
       </ProfileContainer>
       <ProfilePosts>
         <div className="postsWrapper">
           {posts.map((p) => (
-            <div key={p.id} className="profilePostWrapper">
-              <div className="profilePost">
+            <div key={p.id}
+                 className={`profilePostWrapper ${selectedPost.id === p.id ? 'selectedPost' : ''}`}
+                 onClick={(e) => setSelectedPost(p)}>
+              <div className="profilePost" style={{border: "1px solid black"}}>
                 {p.fileType === "IMAGE" ?
                   <img
                     src={
@@ -347,6 +368,9 @@ const ProfilePosts = styled.div`
     height: 100%;
     object-fit: fill;
     display: block;
+  }
+  .selectedPost {
+    border: 5px solid #1872f2;
   }
 `;
 export default Profile;

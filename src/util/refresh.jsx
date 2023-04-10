@@ -16,12 +16,12 @@ const Intercept = (instance) => {
   };
   instance.interceptors.request.use(
     async (config) => {
-      // let currentDate = new Date();
-      // const decodedToken = jwt_decode(user.accessToken);
-      // if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      //   const data = await refreshToken();
-      //   config.headers["Authorization"] = "Bearer " + data.accessToken;
-      // }
+      let currentDate = new Date();
+      const decodedToken = jwt_decode(user.accessToken);
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        localStorage.removeItem("user");
+      }
+
         console.log("intercepted")
         config.headers["Authorization"] = "Bearer " + user.accessToken;
       return config;

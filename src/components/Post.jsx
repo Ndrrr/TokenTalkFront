@@ -91,12 +91,12 @@ function Post(props) {
           <div className="postTopright">
             <FiMoreVertical
               onClick={() => {
-                setShowMenu(!showMenu);
+                //setShowMenu(!showMenu);
               }}
             />
             {showMenu && (
               <div className="topRightPanel" onClick={deleteHandler}>
-                Make Nft
+                Delete
               </div>
             )}
           </div>

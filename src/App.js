@@ -10,6 +10,7 @@ import { NotificationContainer } from "react-notifications";
 import './axios-conf'
 import NftDashboard from "./components/pages/NftDashboard";
 import Marketplace from "./components/pages/Marketplace";
+import MyListedItems from "./components/pages/MyListedItems";
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -57,6 +58,16 @@ function App() {
                 element={
                     user ? (
                         <NftDashboard rerenderFeed={rerenderFeed} onChange={handleChange}/>
+                    ) : (
+                        <Navigate to="/login" />
+                    )
+                }
+            />
+            <Route
+                path="/listed-nft"
+                element={
+                    user ? (
+                        <MyListedItems rerenderFeed={rerenderFeed} onChange={handleChange}/>
                     ) : (
                         <Navigate to="/login" />
                     )

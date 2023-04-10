@@ -3,14 +3,18 @@ import {ethers} from "ethers"
 import {Button, Card, Col, Row} from 'react-bootstrap'
 import {loadContracts} from "../../util/web3Util";
 import Topbar from "../Topbar";
+import {useWeb3Data} from "../../contexts/Web3AccountContext";
 
 const MarketPlace = (props) => {
+    const {web3Account, onWeb3AccountChange} = useWeb3Data()
     const [loading, setLoading] = useState(true)
     const [items, setItems] = useState([])
     const [marketplace, setMarketplace] = useState(null)
     const [nft, setNft] = useState()
+    const [account, setAccount] = useState(null)
 
     useEffect(() => {
+        console.log(web3Account.account.account)
         const loadMarketplace = async () => {
             const {marketplace, nft} = await loadContracts()
             setNft(nft)
@@ -52,7 +56,6 @@ const MarketPlace = (props) => {
                     image: metadata.image,
                     fileType: filetype,
                 })
-                console.log(filetype)
             }
         }
         setLoading(false)
@@ -96,16 +99,15 @@ const MarketPlace = (props) => {
                                         }
                                         <Card.Body color="secondary">
                                             <Card.Title>{item.name}</Card.Title>
-                                            <Card.Text>
-                                                {item.description}
-                                            </Card.Text>
                                         </Card.Body>
                                         <Card.Footer>
-                                            <div className='d-grid'>
-                                                <Button onClick={() => buyMarketItem(item)} variant="primary" size="lg">
-                                                    Buy for {ethers.utils.formatEther(item.totalPrice)} ETH
-                                                </Button>
-                                            </div>
+                                            {item.seller !== web3Account.account.account && (
+                                                <div className='d-grid'>
+                                                    <Button onClick={() => buyMarketItem(item)} variant="primary" size="lg">
+                                                        Buy for {ethers.utils.formatEther(item.totalPrice)} ETH
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </Card.Footer>
                                     </Card>
                                 </Col>

@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from "react";
-import ReactDOM from "react-dom";
 import styled from "styled-components";
 import Topbar from "../Topbar";
 import axios from "axios";
@@ -36,6 +35,7 @@ function NftDashboard(props) {
     const {user: currentUser, dispatch} = useContext(AuthContext);
     const [posts, setPosts] = useState([]);
     const [nfts, setNfts] = useState([]);
+    const [resetter, reset] = useState(0)
 
     const [user, setUser] = useState({})
     const [loading, setLoading] = useState(true)
@@ -111,22 +111,22 @@ function NftDashboard(props) {
         fetchUser();
     }, [currentUser.email]);
 
-    const handlePostSelect = (p) => {
-        console.log(p.id)
+    const handlePostSelect = async (p) => {
         setSelectedPost(p)
-        uploadToIPFS()
+
+        uploadToIPFS(p)
     }
 
-    const uploadToIPFS = async () => {
-        console.log(selectedPost)
-        fetch(postsUrl + "/" + selectedPost.fileId, {
+    const uploadToIPFS = async (p) => {
+        fetch(postsUrl + "/" + p.fileId, {
             method: 'GET',
         }).then(response => response.blob())
             .then(async fileBlob => {
-                const fileExtension = selectedPost.mimeType.split('/')[1]
-                const file = new File([fileBlob], `${selectedPost.id}.${fileExtension}`, {type: selectedPost.mimeType})
+                const fileExtension = p.mimeType.split('/')[1]
+                const file = new File([fileBlob], `${p.id}.${fileExtension}`, {type: p.mimeType})
 
-                console.log(file)
+                console.log("log from upload: " )
+                console.log(p)
                 if (typeof file !== 'undefined') {
                     try {
                         const result = await client.add(file)
@@ -142,7 +142,9 @@ function NftDashboard(props) {
         if (!nftInfuraUrl || !price || !nftName || !selectedPost.content) return
         try{
             const result = await client.add(JSON.stringify({
-                image: nftInfuraUrl, price, name: nftName,
+                seller: account,
+                image: nftInfuraUrl, price,
+                name: nftName,
                 description: selectedPost.mimeType,
                 fileType: selectedPost.fileType}))
             mintThenList(result)
@@ -231,8 +233,8 @@ function NftDashboard(props) {
                             {posts.map((p) => (
                                 <div key={p.id}
                                      className={`profilePostWrapper ${selectedPost.id === p.id ? 'selectedPost' : ''}`}
-                                     onClick={() => handlePostSelect(p)}>
-                                    <div className="profilePost">
+                                     onClick={async () => handlePostSelect(p)}>
+                                    <div className="profilePost" style={{border: "1px solid black"}}>
                                         {p.fileType === "IMAGE" ?
                                             <img
                                                 src={
@@ -440,7 +442,6 @@ const ProfilePosts = styled.div`
 
   .selectedPost {
     border: 5px solid #1872f2;
-        
   }
 `;
 export default NftDashboard;

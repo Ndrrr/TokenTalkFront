@@ -12,9 +12,8 @@ import Search from "./Search";
 import axios from "axios";
 import Backdrop from "./UI/Backdrop";
 import SearchBarMobile from "./SearchBarMobile";
-import TokenTalkLogo from "../assets/images/tokentalklogo-without-text.png";
-import {Button, CloseButton, Modal, Spinner} from "react-bootstrap";
-import {useWeb3Data, Web3ContextProvider} from "../contexts/Web3AccountContext";
+import {Button, CloseButton, Modal} from "react-bootstrap";
+import {useWeb3Data} from "../contexts/Web3AccountContext";
 
 function Topbar(props) {
   const navigate = useNavigate();
@@ -22,8 +21,8 @@ function Topbar(props) {
   const { web3Account } = useWeb3Data();
   const [showMenu, setShowMenu] = useState(false);
   const [showAddPost, setShowAddPost] = useState(false);
-  const [showSearch, setshowSearch] = useState(false);
-  const [usersSearch, setusersSearch] = useState([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const [usersSearch, setUsersSearch] = useState([]);
   const [searchquery, setSearchquery] = useState("");
   const [showBarSearchMobile, setShowBarSearchMobile] = useState(false);
   const logoutHandler = async () => {
@@ -51,13 +50,13 @@ function Topbar(props) {
   };
   const hideBarSearchMobileHandler = () => {
     setShowBarSearchMobile(false);
-    setshowSearch(false);
+    setShowSearch(false);
   };
   const searchHandler = (e) => {
     if (searchquery.length < 1) {
-      setshowSearch(false);
+      setShowSearch(false);
     } else {
-      setshowSearch(true);
+      setShowSearch(true);
     }
     setSearchquery(e.target.value);
   };
@@ -66,12 +65,13 @@ function Topbar(props) {
       try {
         if (searchquery.length >= 1) {
           const searchresult = await axios.get(
-            "user/searchUser",
+            "/profile/search",
             {
-              params: { search: searchquery },
+              headers: { Authorization: "Bearer " + user.accessToken },
+              params: { email: searchquery },
             }
           );
-          setusersSearch(searchresult.data);
+          setUsersSearch(searchresult.data);
         }
       } catch (error) {}
     };
@@ -88,15 +88,12 @@ function Topbar(props) {
           hidebar={hideBarSearchMobileHandler}
         />
       )}
-      {showSearch && <Backdrop onClose={hideBarSearchMobileHandler} />}
-        <Modal style={{height:"30%"}} backdrop={false} show={showAddPost}  onHide={hideAddPostWithBackdropHandler}>
+        <Modal show={showAddPost}  onHide={hideAddPostWithBackdropHandler}>
             <Modal.Header >
               <Modal.Title>Share your thoughts</Modal.Title>
               <CloseButton onClick={hideAddPostHandler} />
             </Modal.Header>
-          <Modal.Body>
-          <Share hideAddPostHandler={hideAddPostHandler}></Share>
-          </Modal.Body>
+            <Share hideAddPostHandler={hideAddPostHandler}></Share>
         </Modal>
       )
 
@@ -121,7 +118,7 @@ function Topbar(props) {
               <Search
                 data={usersSearch}
                 hideSearch={() => {
-                  setshowSearch(false);
+                  setShowSearch(false);
                 }}
               />
             </>
@@ -154,7 +151,7 @@ function Topbar(props) {
                 setShowMenu(!showMenu);
               }}
               alt=""
-              src={`${user.profileImage}`}
+              src={`${user.profileImage ? user.profileImage : "https://i.imgur.com/6VBx3io.png"}`}
             />
             {showMenu && (
               <div className="TopbarMenu">
@@ -175,7 +172,8 @@ function Topbar(props) {
                 >
                   Create Nft
                 </span>
-                <span
+                {web3Account.account && (
+                    <span
                     className="menuItems"
                     onClick={() => {
                       navigate(`/marketplace/`);
@@ -183,8 +181,24 @@ function Topbar(props) {
                 >
                   Marketplace
                 </span>
-                {web3Account && (
-                  <span className="menuItems" onClick={disconnectWeb3AccountHandler}>
+
+                )}
+
+                {web3Account.account && (
+                    <span
+                        className="menuItems"
+                        onClick={() => {
+                          navigate(`/listed-nft/`);
+                        }}
+                    >
+                  My listed NFTs
+                </span>
+
+                )}
+
+                {web3Account.account && (
+
+                  <span className="menuItems" onMouseEnter={e => console.log(web3Account)} onClick={disconnectWeb3AccountHandler}>
                     Disconnect From Metamask
                   </span>
                 )}

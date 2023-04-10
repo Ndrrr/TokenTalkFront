@@ -5,20 +5,20 @@ import { Link } from "react-router-dom";
 function Search({ data, hideSearch }) {
   return (
     <SearchContainer>
-      <div className="searchWrapper">
+      <div className="searchWrapper" style={{opacity: "90%", marginTop: "8px"}}>
         <div className="users">
           {data?.users?.map((u) => (
             <Link
               style={{ textDecoration: "none" }}
-              to={`/profile/${u.username}`}
+              to={`/profile/${u.email}`}
               onClick={hideSearch}
             >
-              <div key={u._id} className="user">
+              <div key={u.email} className="user">
                 <div className="userRight">
                   <img
                     src={
-                      u.profilePicture
-                        ? u.profilePicture
+                      u.profileImage
+                        ? u.profileImage
                         : "person/noAvatar.png"
                     }
                     alt=""
@@ -27,7 +27,7 @@ function Search({ data, hideSearch }) {
                 </div>
 
                 <div className="userLeft">
-                  <span>{u.username}</span>
+                  <span>{u.email} <span className={"text-muted"}>{u.firstName} {u.lastName}</span> </span>
                 </div>
               </div>
             </Link>
