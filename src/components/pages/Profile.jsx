@@ -17,7 +17,7 @@ function Profile(props) {
   const email = useParams().email;
   const { user: currentUser, dispatch } = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
-  const [followed, setFollowed] = useState(true);
+  const [followed, setFollowed] = useState(false);
   const [showEditProfile, setshowEditProfile] = useState(false);
   const [selectedPost, setSelectedPost] = useState({id:0})
 
@@ -45,29 +45,32 @@ function Profile(props) {
       setPosts(posts.filter((p) => p.id !== selectedPost.id));
     } catch (error) {}
   }
-  // useEffect(() => {
-  //   setFollowed(currentUser.data.followees.includes(user?.id));
-  // }, [currentUser.data.followees, user.id]);
   const followHandler = async () => {
     try {
       if (followed) {
-        await axiosJWT.put(
-          `user/${email}/unfollow`,
-          {},
+        await axiosJWT.post(
+          `/follow/unfollow`,
+          {
+            "followeeEmail": user.email,
+            "followerEmail": currentUser.email
+          },
           {
             headers: { Authorization: "Bearer " + currentUser.accessToken },
           }
         );
-        dispatch({ type: "UNFOLLOW", payload: user._id });
+        user.followers = user.followers.filter((f) => f.email !== currentUser.email);
       } else {
-        await axiosJWT.put(
-          `user/${email}/follow`,
-          {},
+        await axiosJWT.post(
+          `/follow`,
+          {
+            "followeeEmail": user.email,
+            "followerEmail": currentUser.email
+          },
           {
             headers: { Authorization: "Bearer " + currentUser.accessToken },
           }
         );
-        dispatch({ type: "FOLLOW", payload: user._id });
+        user.followers.push(currentUser);
       }
       setFollowed(!followed);
     } catch (e) {}
@@ -97,6 +100,15 @@ function Profile(props) {
       user.data.followers = followers.data.followers;
       user.data.followees = followees.data.followees;
       setCurrentUser(user.data);
+      console.log(user.data)
+      let follows = false
+      user.data.followers.forEach((f) => {
+        if (f.email === currentUser.email) {
+          follows = true
+        }
+      });
+      setFollowed(follows)
+
       const pst = await axios.get(
         "/posts/all?authorEmails=" + email,
           {
