@@ -38,7 +38,7 @@ function Rightbar() {
                   to={"/profile/" + f.email}
                 >
                   <img
-                    src={f.profileImage}
+                    src={f.profileImage ? f.profileImage : "https://i.imgur.com/6VBx3io.png"}
                     alt=""
                     className="rightbarFollowingImg"
                   />

@@ -39,7 +39,7 @@ function Share(props) {
       }
     } catch (e) {
       props.hideAddPostHandler()
-      NotificationManager.warning("Warning", "Photo is required", 3000);
+      NotificationManager.warning("Warning", "File and description required", 3000);
     }
   };
 

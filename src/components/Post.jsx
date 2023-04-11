@@ -73,7 +73,7 @@ function Post(props) {
                     <div className="postTopLeft">
                         <Link to={"/profile/" + post.user.email}>
                             <img
-                                src={post.user.profileImage}
+                                src={post.user.profileImage ? post.user.profileImage : "https://i.imgur.com/6VBx3io.png"}
                                 alt=""
                                 className="postProfileImg"
                             />
