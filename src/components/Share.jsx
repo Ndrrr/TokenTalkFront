@@ -38,6 +38,7 @@ function Share(props) {
         throw new Error("No file !!");
       }
     } catch (e) {
+      props.hideAddPostHandler()
       NotificationManager.warning("Warning", "Photo is required", 3000);
     }
   };

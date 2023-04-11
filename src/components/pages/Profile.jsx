@@ -146,7 +146,7 @@ function Profile(props) {
           </div>
           <div className="profileData">
             <div className="profileSettings">
-              <span className="profileSettingsUsername">{user.email}</span>
+              <span className="profileSettingsUsername">{user.firstName} {user.lastName}</span>
               {currentUser.email === email ? (
                 <>
                   <a

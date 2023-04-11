@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import Share from "./Share";
 import Search from "./Search";
 import axios from "axios";
-import Backdrop from "./UI/Backdrop";
 import SearchBarMobile from "./SearchBarMobile";
 import {Button, CloseButton, Modal} from "react-bootstrap";
 import {useWeb3Data} from "../contexts/Web3AccountContext";
@@ -95,7 +94,6 @@ function Topbar(props) {
             </Modal.Header>
             <Share hideAddPostHandler={hideAddPostHandler}></Share>
         </Modal>
-      )
 
       <TopbarContainer>
         <div className="TopbarLeft">
