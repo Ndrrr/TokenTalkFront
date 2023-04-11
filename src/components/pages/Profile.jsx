@@ -4,13 +4,13 @@ import { FiSettings } from "react-icons/fi";
 import Topbar from "../Topbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import Modal from "../UI/Modal";
 import EditProfile from "../EditProfile";
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import Intercept from "../../util/refresh";
 import {baseBackUrl} from "../../axios-conf";
 import {baseFrontUrl} from "../../axios-conf";
-import {Button} from "react-bootstrap";
+import {Modal} from "react-bootstrap";
+
 function Profile(props) {
   const postsUrl = baseBackUrl + "/posts/files";
 
@@ -126,11 +126,9 @@ function Profile(props) {
   }, [email]);
   return (
     <>
-      {showEditProfile && (
-        <Modal onClose={hideEditProfileHandler}>
+        <Modal show={showEditProfile} onHide={hideEditProfileHandler}>
           <EditProfile onClose={hideEditProfileHandler} />
         </Modal>
-      )}
       <Topbar
         rerenderFeed={props.rerenderFeed}
         onChange={props.onChange}

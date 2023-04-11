@@ -56,8 +56,10 @@ function Signup() {
     e.preventDefault();
     const data = { email, firstName ,lastName, password };
     try {
-      await axios.post("/auth/register", data);
-      navigate("/login");
+      if (passwordError === '' && passwordConfirmError === '') {
+        await axios.post("/auth/register", data);
+        navigate("/login");
+      }
     } catch (error) {
       NotificationManager.error(error.response.data.message, "Warning", 3000);
     }
