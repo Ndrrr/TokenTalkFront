@@ -43,7 +43,7 @@ const MarketPlace = (props) => {
                 // get total price of item (item price + fee)
                 const totalPrice = await marketplace.getTotalPrice(item.itemId)
                 let filetype = "image";
-                if(metadata.description.includes("video")){
+                if (metadata.description.includes("video")) {
                     filetype = "video"
                 }
                 // Add item to items array
@@ -94,8 +94,12 @@ const MarketPlace = (props) => {
                                     {console.log(item) && null}
                                     <Card>
                                         {item.fileType === "video" ?
-                                            <video controls width={360} height={360} src={item.image}/> : (
-                                        <Card.Img variant="top" src={item.image}/>)
+                                            <video controls width={360} height={360} src={item.image}/> :
+                                            item.fileType === "image" ?
+                                                (
+                                                    <Card.Img variant="top" src={item.image}/>
+                                                )
+                                                : <audio controls src={item.image}/>
                                         }
                                         <Card.Body color="secondary">
                                             <Card.Title>{item.name}</Card.Title>
@@ -103,7 +107,8 @@ const MarketPlace = (props) => {
                                         <Card.Footer>
                                             {item.seller !== web3Account.account.account && (
                                                 <div className='d-grid'>
-                                                    <Button onClick={() => buyMarketItem(item)} variant="primary" size="lg">
+                                                    <Button onClick={() => buyMarketItem(item)} variant="primary"
+                                                            size="lg">
                                                         Buy for {ethers.utils.formatEther(item.totalPrice)} ETH
                                                     </Button>
                                                 </div>

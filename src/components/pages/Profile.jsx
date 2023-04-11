@@ -210,9 +210,11 @@ function Profile(props) {
                     alt=""
                     className="profilePostImg"
                   />
-                    :
+                    : p.fileType === "VIDEO" ?
                     <video controls className="profilePostImg"
                            src={ p.fileId ? `${postsUrl}/${p.fileId}` : baseFrontUrl + "/images/defaultpost.jpg"} />
+                        : <audio src={ p.fileId ? `${postsUrl}/${p.fileId}` : baseFrontUrl + "/images/defaultpost.jpg"} controls className="profilePostImg" />
+
                 }
               </div>
             </div>

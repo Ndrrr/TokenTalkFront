@@ -244,9 +244,10 @@ function NftDashboard(props) {
                                                 alt=""
                                                 className="profilePostImg"
                                             />
-                                            :
+                                            : p.fileType === "VIDEO" ?
                                             <video controls className="profilePostImg"
                                                    src={p.fileId ? `${postsUrl}/${p.fileId}` : baseFrontUrl + "/images/defaultpost.jpg"}/>
+                                                : <audio controls className="profilePostImg" src={p.fileId ? `${postsUrl}/${p.fileId}`: ""}/>
                                         }
                                     </div>
                                 </div>

@@ -68,7 +68,7 @@ function Share(props) {
                 style={{ display: "none" }}
                 type="file"
                 id="file"
-                accept="image/*,video/*"
+                accept="image/*,video/*,audio/*"
                 onChange={e => onFileSet(e)}
               />
             </label>

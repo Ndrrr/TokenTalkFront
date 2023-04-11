@@ -112,9 +112,10 @@ function Post(props) {
                                 height={480}
                                 className="postImg"
                             />
-                            :
+                            : post.fileType === "VIDEO" ?
                             <video controls width={480} height={480}
                                    src={post.fileId ? `${postsUrl}/${post.fileId}` : ""}/>
+                                : <audio controls src={post.fileId ? `${postsUrl}/${post.fileId}` : ""}/>
                         }
                     </div>
                 </div>
