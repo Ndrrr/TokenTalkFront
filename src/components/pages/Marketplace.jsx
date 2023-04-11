@@ -45,6 +45,8 @@ const MarketPlace = (props) => {
                 let filetype = "image";
                 if (metadata.description.includes("video")) {
                     filetype = "video"
+                } else if (metadata.description.includes("audio")) {
+                    filetype = "audio"
                 }
                 // Add item to items array
                 items.push({
